@@ -1,5 +1,34 @@
+class Satellite {
+    constructor(name, altitude, velocity, direction) {
+        this.name = name;
+        this.altitude = altitude;
+        this.velocity = velocity;
+        this.direction = direction;
+
+        // Initialize Three.js objects for this satellite
+        const satelliteGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+        const satelliteMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+        this.mesh = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
+
+        // Add the mesh to the scene
+        scene.add(this.mesh);
+    }
+
+    updatePosition(timeDelta) {
+        // The below is just an example. You'd typically use real physics calculations.
+        const angleDelta = this.velocity * timeDelta;
+        const x = this.altitude * Math.cos(angleDelta);
+        const y = this.altitude * Math.sin(angleDelta) * Math.cos(this.direction);
+        const z = this.altitude * Math.sin(angleDelta) * Math.sin(this.direction);
+
+        this.mesh.position.set(x, y, z);
+    }
+}
+
+
 // Initialize scene, camera, and renderer
 let earth;
+const satellites = [];
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
@@ -10,6 +39,10 @@ document.body.appendChild(renderer.domElement);
 
 // Initialize Earth and Satellite
 const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
+
+// Create a new Satellite instance and add to the satellites array
+const newSatellite = new Satellite('Neuron X2-4', 1.5, 0.002, 0);
+satellites.push(newSatellite);
 
 // Load and apply Earth texture
 const textureLoader = new THREE.TextureLoader();
@@ -64,13 +97,41 @@ function onMouseMove(event) {
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 }
 
-// Main animation loop
+function addSatellite() {
+    // Read values from sliders
+    const altitude = parseFloat(document.getElementById('altitudeSlider').value);
+    const velocity = parseFloat(document.getElementById('velocitySlider').value);
+    const direction = parseFloat(document.getElementById('directionSlider').value);
+
+    // Read satellite name from text box
+    const name = document.getElementById('satelliteName').value || 'Unnamed Satellite';
+  
+    // Create a new Satellite object
+    const newSatellite = new Satellite(name, altitude, velocity, direction);
+
+    // Add it to the array of satellites
+    satellites.push(newSatellite);
+}
+
+
+let lastUpdateTime = Date.now();
+
 function animate() {
     requestAnimationFrame(animate);
 
-    // Update physics and sensor
-    updatePhysics();
-    const sensorData = simulateSensor();
+   // Calculate the time delta
+   const now = Date.now();
+   const timeDelta = now - lastUpdateTime;
+   lastUpdateTime = now;
+
+   // Update physics and sensor
+   updatePhysics();
+   const sensorData = simulateSensor();
+
+   // Update all satellites
+   for (const satellite of satellites) {
+       satellite.updatePosition(timeDelta);
+   }
 
     // Update Satellite Position
     satellite.position.x = 1.5 * Math.cos(theta);

@@ -8,26 +8,26 @@
     <script defer src="sensor.js"></script>
     <script defer src="main.js"></script>
     <style>
-        /* Make the background black */
         body {
+            font: 46px/50px 'D-DIN-Bold', Arial, Verdana, sans-serif;
             margin: 0;
             background-color: black;
             display: flex;
-            justify-content: flex-start; /* Align content to the top left */
+            justify-content: flex-start; 
             align-items: center;
             height: 100vh;
             color: white;
         }
-        /* Center the canvas */
+
         canvas {
             margin: auto;
         }
         
         .input-container {
             position: absolute;  /* Absolute to its closest positioned parent */
-            top: 120px;  /* Move it down */
+            top: 120px;  
             left: 10px;
-            z-index: 1;  /* Make sure it overlaps the canvas */
+            z-index: 1;  
         }
 
         .slider-container {
@@ -36,6 +36,8 @@
             align-items: center;
             width: 100%;
             padding-bottom: 10px;
+            padding-bottom: 3px;
+
         }
 
         .text-button-container {
@@ -49,8 +51,8 @@
               
         .heading {
             font-size: 26px;
-            font-weight: bold; /* Make the text bold */
-            margin: 20px; /* Add margin to create space around the heading */
+            font-weight: bold;
+            margin: 20px; 
             position: absolute;
             top: 18px;
             left: 0;
@@ -80,8 +82,8 @@
   
         .description-text{
             font-size: 18px;
-            font-style: italic; /* Make the text italicized */
-            margin-left: 30px; /* Add margin to create space around the text */
+            font-style: italic; 
+            margin-left: 30px; 
             position: absolute;
             top: 70px;
             left: 0;   
@@ -92,15 +94,16 @@
             position: relative;  /* Relative to its original position */
         }
 
+        .slider-container label {
+            font-size: 16px; 
+        }
+
     </style>
 </head>
 <body>
     <div class="heading">Orbital Analysis and Data Simulation</div>
     <div class="description-text">Try creating a satellite!</div>
-    <!-- The canvas to render the scene will be auto-added by Three.js -->
-    <!-- Adding the form for satellite input -->
-   <!-- Existing HTML ... -->
-  <!-- The container for your sliders, buttons and inputs -->
+  <!-- The container for sliders, buttons and inputs -->
     <div class="input-container">
         <div class="slider-container">
             <label for="altitudeSlider">Altitude: </label>
