@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Satellite Simulation</title>
+    <script src="https://threejs.org/build/three.js"></script>
+    <script defer src="physics.js"></script>
+    <script defer src="sensor.js"></script>
+    <script defer src="main.js"></script>
+    <style>
+        /* Make the background black */
+        body {
+            margin: 0;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        /* Center the canvas */
+        canvas {
+            margin: auto;
+        }
+        
+        /* Styling for the input and button */
+        .input-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+            display: flex;
+            gap: 10px;
+        }
+        
+        #satelliteName {
+            padding: 8px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        #addSatelliteButton {
+            padding: 8px 20px;
+            background-color: #4CAF50;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        #addSatelliteButton:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <!-- The canvas to render the scene will be auto-added by Three.js -->
+    <!-- Adding the form for satellite input -->
+    <div class="input-container">
+        <input id="satelliteName" type="text" placeholder="Satellite Name">
+        <button id="addSatelliteButton" onclick="addSatellite()">Add Satellite</button>
+    </div>
+</body>
+</html>
