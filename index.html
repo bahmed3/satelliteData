@@ -13,9 +13,10 @@
             margin: 0;
             background-color: black;
             display: flex;
-            justify-content: center;
+            justify-content: flex-start; /* Align content to the top left */
             align-items: center;
             height: 100vh;
+            color: white;
         }
         /* Center the canvas */
         canvas {
@@ -25,15 +26,24 @@
         /* Styling for the input and button */
         .input-container {
             position: absolute;
-            top: 10px;
+            top: 100px;
             left: 10px;
             z-index: 1;
             display: flex;
             gap: 10px;
         }
-        
+              
+        .heading {
+            font-size: 24px;
+            font-weight: bold; /* Make the text bold */
+            margin: 20px; /* Add margin to create space around the heading */
+            position: absolute;
+            top: 20px;
+            left: 0;
+        }
+
         #satelliteName {
-            padding: 8px;
+            padding: 15px;
             border: none;
             border-radius: 20px;
             font-size: 16px;
@@ -42,7 +52,7 @@
         
         #addSatelliteButton {
             padding: 8px 20px;
-            background-color: #4CAF50;
+            background-color: #2f0c36;
             border: none;
             border-radius: 20px;
             color: white;
@@ -51,11 +61,23 @@
         }
         
         #addSatelliteButton:hover {
-            background-color: #45a049;
+            background-color: #0b0033;
         }
+  
+        .description-text{
+            font-size: 18px;
+            font-style: italic; /* Make the text italicized */
+            margin-left: 30px; /* Add margin to create space around the text */
+            position: absolute;
+            top: 70px;
+            left: 0;   
+        }
+
     </style>
 </head>
 <body>
+    <div class="heading">Orbital Analysis and Data Simulation</div>
+    <div class="description-text">Try creating a satellite!</div>
     <!-- The canvas to render the scene will be auto-added by Three.js -->
     <!-- Adding the form for satellite input -->
     <div class="input-container">
