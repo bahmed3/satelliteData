@@ -23,22 +23,36 @@
             margin: auto;
         }
         
-        /* Styling for the input and button */
         .input-container {
-            position: absolute;
-            top: 100px;
+            position: absolute;  /* Absolute to its closest positioned parent */
+            top: 120px;  /* Move it down */
             left: 10px;
-            z-index: 1;
-            display: flex;
-            gap: 10px;
+            z-index: 1;  /* Make sure it overlaps the canvas */
         }
+
+        .slider-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .text-button-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px; 
+        }
+
               
         .heading {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold; /* Make the text bold */
             margin: 20px; /* Add margin to create space around the heading */
             position: absolute;
-            top: 20px;
+            top: 18px;
             left: 0;
         }
 
@@ -73,6 +87,11 @@
             left: 0;   
         }
 
+        #simulationContainer {
+            flex: 1;
+            position: relative;  /* Relative to its original position */
+        }
+
     </style>
 </head>
 <body>
@@ -80,9 +99,25 @@
     <div class="description-text">Try creating a satellite!</div>
     <!-- The canvas to render the scene will be auto-added by Three.js -->
     <!-- Adding the form for satellite input -->
+   <!-- Existing HTML ... -->
+  <!-- The container for your sliders, buttons and inputs -->
     <div class="input-container">
-        <input id="satelliteName" type="text" placeholder="Satellite Name">
-        <button id="addSatelliteButton" onclick="addSatellite()">Add Satellite</button>
+        <div class="slider-container">
+            <label for="altitudeSlider">Altitude: </label>
+            <input id="altitudeSlider" type="range" min="1" max="10" step="0.1">
+        </div>
+        <div class="slider-container">
+            <label for="velocitySlider">Velocity: </label>
+            <input id="velocitySlider" type="range" min="0" max="1" step="0.01">
+        </div>
+        <div class="slider-container">
+            <label for="directionSlider">Direction: </label>
+            <input id="directionSlider" type="range" min="-1" max="1" step="0.01">
+        </div>
+        <div class="text-button-container">
+            <input id="satelliteName" type="text" placeholder="Satellite Name">
+            <button id="addSatelliteButton" onclick="addSatellite()">Add Satellite</button>
+        </div>
     </div>
 </body>
 </html>
