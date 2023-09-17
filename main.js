@@ -4,6 +4,7 @@ class Satellite {
         this.altitude = altitude;
         this.velocity = velocity;
         this.direction = direction;
+        this.currentAngle = 0; 
 
         // Initialize Three.js objects for this satellite
         const satelliteGeometry = new THREE.SphereGeometry(0.1, 32, 32);
@@ -13,18 +14,24 @@ class Satellite {
         // Add the mesh to the scene
         scene.add(this.mesh);
     }
-
+    
     updatePosition(timeDelta) {
-        // The below is just an example. You'd typically use real physics calculations.
+        // Calculate the angle change based on velocity and time
         const angleDelta = this.velocity * timeDelta;
-        const x = this.altitude * Math.cos(angleDelta);
-        const y = this.altitude * Math.sin(angleDelta) * Math.cos(this.direction);
-        const z = this.altitude * Math.sin(angleDelta) * Math.sin(this.direction);
 
-        this.mesh.position.set(x, y, z);
+        // Update the current angle of the satellite
+        this.currentAngle += angleDelta;
+
+        // Calculate the new x and z position based on the altitude and current angle
+        const x = this.altitude * Math.cos(this.currentAngle);
+        const z = this.altitude * Math.sin(this.currentAngle);
+
+        // Set the new position. We'll keep y constant for now
+        this.mesh.position.set(x, 0, z);
+
+        
     }
 }
-
 
 // Initialize scene, camera, and renderer
 let earth;
@@ -37,11 +44,11 @@ const mouse = new THREE.Vector2();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Initialize Earth and Satellite
+// Initialize Earth
 const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
 
 // Create a new Satellite instance and add to the satellites array
-const newSatellite = new Satellite('Neuron X2-4', 1.5, 0.002, 0);
+const newSatellite = new Satellite('Neuron X2-4', 1.5, 0.0001, 0);
 satellites.push(newSatellite);
 
 // Load and apply Earth texture
@@ -51,11 +58,6 @@ textureLoader.load('./8k_earth_daymap.jpg', function(texture) {
     earth = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earth);
 });
-
-const satelliteGeometry = new THREE.SphereGeometry(0.1, 32, 32);
-const satelliteMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const satellite = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
-scene.add(satellite);
 
 // Create label canvas
 const canvas = document.createElement('canvas');
@@ -69,7 +71,7 @@ const labelMaterial = new THREE.SpriteMaterial({ map: labelTexture });
 // Create sprite and add to the scene
 const label = new THREE.Sprite(labelMaterial);
 label.position.set(0.2, 0.2, 0.2);
-satellite.add(label);
+newSatellite.mesh.add(label);
 
 // Initialize simulation variables
 let theta = 0;
@@ -98,58 +100,35 @@ function onMouseMove(event) {
 }
 
 function addSatellite() {
-    // Read values from sliders
     const altitude = parseFloat(document.getElementById('altitudeSlider').value);
     const velocity = parseFloat(document.getElementById('velocitySlider').value);
-    const direction = parseFloat(document.getElementById('directionSlider').value);
-
-    // Read satellite name from text box
+    const direction = parseFloat(document.getElementById('directionSlider').value) * (Math.PI / 180);
     const name = document.getElementById('satelliteName').value || 'Unnamed Satellite';
-  
-    // Create a new Satellite object
     const newSatellite = new Satellite(name, altitude, velocity, direction);
-
-    // Add it to the array of satellites
     satellites.push(newSatellite);
 }
-
 
 let lastUpdateTime = Date.now();
 
 function animate() {
     requestAnimationFrame(animate);
+    const now = Date.now();
+    const timeDelta = now - lastUpdateTime;
+    lastUpdateTime = now;
+    updatePhysics();
+    const sensorData = simulateSensor();
 
-   // Calculate the time delta
-   const now = Date.now();
-   const timeDelta = now - lastUpdateTime;
-   lastUpdateTime = now;
+    for (const satellite of satellites) {
+        satellite.updatePosition(timeDelta);
+    }
 
-   // Update physics and sensor
-   updatePhysics();
-   const sensorData = simulateSensor();
-
-   // Update all satellites
-   for (const satellite of satellites) {
-       satellite.updatePosition(timeDelta);
-   }
-
-    // Update Satellite Position
-    satellite.position.x = 1.5 * Math.cos(theta);
-    satellite.position.y = 0;
-    satellite.position.z = 1.5 * Math.sin(theta);
-
-    // Perform raycasting
     raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects([satellite]);
+    const intersects = raycaster.intersectObjects(satellites.map(s => s.mesh));
 
-    // Clear previous content
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "#ffffff";
-
-    // Show satellite name always
     context.fillText(`Neuron X2-4`, 10, 30);
 
-    // Show info only if the mouse is over the satellite
     if (intersects.length > 0) {
         context.fillText(`Position: ${theta.toFixed(2)}`, 10, 50);
         context.fillText(`Temperature: ${sensorData.temperature.toFixed(2)} C`, 10, 70);
@@ -158,17 +137,12 @@ function animate() {
 
     labelTexture.needsUpdate = true;
 
-    // Rotate Earth
     if (earth) {
         earth.rotation.y += 0.0005;
     }
 
-    // Render the scene
     renderer.render(scene, camera);
 }
 
-// Move camera back
 camera.position.z = 3;
-
-// Start the animation loop
 animate();
